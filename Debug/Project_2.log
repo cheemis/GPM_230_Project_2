@@ -1,0 +1,13 @@
+﻿  Source.cpp
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(113,46): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(113,73): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(122,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  Project_2.vcxproj -> E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Debug\Project_2.exe

@@ -16,9 +16,17 @@ using namespace std;
 using namespace sf;
 namespace fs = std::filesystem;
 
-bool SetTextures(Texture[], int);
-void SetSprites(vector<vector<Sprite>>&, int, Texture[]);
+/*-------------------- MAIN HELPER FUNCTIONS --------------------*/
+void DrawTiles(vector<Sprite>&, int, RenderWindow&);
 
-void ClickSprite(vector<vector<Sprite>>&, int, Vector2f, Texture[], int);
-float CheckDistance(Vector2f, Vector2f, int);
+/*-------------------- SETTING TEXTURES AND SPRITES FUNCTIONS --------------------*/
+bool SetTextures(vector<Texture>&, int);
+void SetSprites(vector<vector<Sprite>>&, int, int, float, vector<Texture>&);
+void SetSelectableSprites(vector<Sprite>&, int, float, Vector2u, vector<Texture>&);
+
+/*-------------------- CLICKING FUNCTIONS --------------------*/
+int DiscoverClickArea(Vector2f, Vector2f, Vector2f, Vector2f);
+void ClickSprite(vector<vector<Sprite>>&, int, float, Vector2f, Texture&);
+int SelectSprite(float, Vector2f);
+
 

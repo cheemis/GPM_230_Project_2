@@ -3,20 +3,36 @@
 
 int main()
 {
+	//Rendering variables
 	RenderWindow window(VideoMode(512, 512), "Sprites!");
-	CircleShape shape(100.f);
-	int index = 0;
+
+	//Texture variables
+	int numTextures = 8;
+
+	//Sprite variables
+	float selectableScale = 1;
+	int currentSpriteIndex = 0;
+
+	//Tilemap variables
+	int numCols = 16;
+	int numRows = 16;
+	float scale = .425;
+
+	//Clikcing variables
 	bool clicked = false;
-	int numCols = 4;
 
-	//set texture/Sprites
-	Texture textures[8];
-	vector<vector<Sprite>> sprites(numCols, vector<Sprite>(numCols));
+	//Texture/sprites variables
+	vector<Texture> textures(numTextures);
+	vector<Sprite> selectableSprites(numTextures);
+	vector<vector<Sprite>> sprites(numCols, vector<Sprite>(numRows));
+	
 
-	if(!SetTextures(textures, 8)) return 0;
-	SetSprites(sprites, numCols, textures);
 
-	shape.setFillColor(Color::Green);
+	//Set textures/sprites
+	if(!SetTextures(textures, numTextures)) return 0;
+	SetSelectableSprites(selectableSprites, numTextures, selectableScale, window.getSize(), textures);
+	SetSprites(sprites, numCols, numRows, scale, textures);
+
 	while (window.isOpen())
 	{
 		bool mousePressed = Mouse::isButtonPressed(Mouse::Left);
@@ -31,44 +47,97 @@ int main()
 
 		if (!clicked && mousePressed)
 		{
-			Vector2i temp = Mouse::getPosition(window);
-			Vector2f currentMousePos = Vector2f(temp);
+			Vector2f tilemapArea = Vector2f(numCols * 64 * scale,numRows * 64 * scale);
 
-			clicked = true;
+			Vector2f selectingTilesArea = Vector2f(window.getSize().x - (64 * selectableScale),numTextures * 64 * selectableScale);
+			
+			Vector2f currentMousePos = Vector2f(Mouse::getPosition(window));
 
+			int clickedArea = DiscoverClickArea(tilemapArea, selectingTilesArea, currentMousePos, Vector2f(window.getSize()));
+
+			/* debugging click locations to terminal
+			cout << "---------------------------" << endl;
+			cout << "tilemapArea: (" << tilemapArea.x << ", " << tilemapArea.y <<")" << endl;
+			cout << "selectingTilesArea: (" << selectingTilesArea.x << ", " << selectingTilesArea.y <<")" << endl;
+			cout << "currentMousePos: (" << currentMousePos.x << ", " << currentMousePos.y <<")" << endl;
+			*/
+
+			switch (clickedArea)
+			{
+			case 1: //Clicked doesnt need to be set, painting
+				ClickSprite(sprites, numCols, 64 * scale ,currentMousePos, textures[currentSpriteIndex]);
+				cout << "clicked tile map" << endl;
+				break;
+
+			case 2://Clicked does need to be set, only select one sprite at a time
+				currentSpriteIndex = SelectSprite(64 * selectableScale, currentMousePos);
+				cout << "sprite clicked index: " << currentSpriteIndex << endl;
+				clicked = true;
+				break;
+
+			default://Clicked does need to be set, nothing only needs to happen once
+				cout << "didn't click anything of importance" << endl;
+				clicked = true;
+				//do nothing
+			}
+
+			/*
 			cout << "current mouse position: (" << currentMousePos.x << ", " << currentMousePos.y << ")" << endl;
 
 			ClickSprite(sprites, numCols, currentMousePos, textures, index);
 			index = (index + 1) % 8;
+			*/
 		}
 		else if (clicked && !mousePressed)
 		{
 			clicked = false;
 		}
 		
+
 		for (int i = 0; i < numCols; i++)
 		{
-			for (int j = 0; j < numCols; j++)
+			for (int j = 0; j < numRows; j++)
 			{
 				window.draw(sprites[i][j]);
+				//cout << "drawing " << sprites[i][j].getTexture() << " - (" << sprites[i][j].getPosition().x << ", " << sprites[i][j].getPosition().y << ")" << endl;
 			}
 		}
+
+		DrawTiles(selectableSprites, numTextures, window);
+
 		window.display();
 	}
 	return 0;
 }
 
-bool SetTextures(Texture textures[], int numTextures)
+
+
+/*-------------------- MAIN HELPER FUNCTIONS --------------------*/
+
+void DrawTiles(vector<Sprite>& sprites, int numSprites, RenderWindow& window)
+{
+	for (int i = 0; i < numSprites; i++)
+	{
+		window.draw(sprites[i]);
+	}
+}
+
+
+
+/*-------------------- SETTING TEXTURES AND SPRITES FUNCTIONS --------------------*/
+
+//This function gets the textures from the assets folder and puts them into an array
+bool SetTextures(vector<Texture>& textures, int numTextures)
 {
 	string path = "Assets/";
 	int i = 0;
-	
+
 	//is there a better way to do this?
 	for (const auto& entry : fs::directory_iterator(path))
 	{
 		//base return case
 		if (i >= numTextures) return false;
- 
+
 		//if the image is NOT found in the file system
 		if (!textures[i].loadFromFile(entry.path().string()))
 		{
@@ -83,41 +152,83 @@ bool SetTextures(Texture textures[], int numTextures)
 	return true;
 }
 
-void SetSprites(vector<vector<Sprite>>& sprites, int numSprites, Texture textures[])
+
+
+//this function sets all the sprites with their textures when the scene starts
+void SetSprites(vector<vector<Sprite>>& sprites, int numCols, int numRows, float scale, vector<Texture>& textures)
 {
-	int index = 1; //for testing, remove later and set all textures to texture 1
-	float scale = 1;
 	int count = 0;
 
-	for(int i = 0; i < numSprites; i++)
+	for(int i = 0; i < numCols; i++)
 	{
-		for (int j = 0; j < numSprites; j++)
+		for (int j = 0; j < numRows; j++)
 		{
-			sprites[i][j].setTexture(textures[index]);
+			sprites[i][j].setTexture(textures[0]);//set everything to dirt
 			sprites[i][j].setScale(scale, scale);
 
 			sprites[i][j].setPosition(64 * scale * i, 64 * scale * j);
-			//cout << "sprite " << count << ": (" << sprites[i][j].getPosition().x << ", " << sprites[i][j].getPosition().y << ")" << endl;
-
-			index = (index + i) % 8;
+			
 			count++;
 		}
-		index = (index + i) % 8;
 	}
 	cout << count << " sprites set!" << endl;
 }
 
-void ClickSprite(vector<vector<Sprite>>& sprites, int numSprites, Vector2f mousePos, Texture textures[], int newTexture)
+void SetSelectableSprites(vector<Sprite>& sprites, int numSprites, float scale, Vector2u screenSize, vector<Texture>& textures)
 {
-	float spriteSize = sprites[0][0].getScale().x * sprites[0][0].getTexture()->getSize().x;
-	Sprite *closestSprite = &sprites[mousePos.x / (spriteSize)][mousePos.y / (spriteSize)];
-	closestSprite->setTexture(textures[newTexture]);
+	int count = 0;
+
+	for (int i = 0; i < numSprites; i++)
+	{
+		sprites[i].setTexture(textures[i]);
+		sprites[i].setScale(scale, scale);
+		sprites[i].setPosition(screenSize.x - 64 * scale, 64 * scale * i);
+
+		cout << "setting " << sprites[i].getTexture() << " at (" << sprites[i].getPosition().x << ", " << sprites[i].getPosition().y << ")" << endl;
+	}
+	//cout << count << " sprites set!" << endl;
 }
 
-float CheckDistance(Vector2f spritePos, Vector2f mousePos, int spriteSize)
-{
-	double newX = pow(spritePos.x - mousePos.x + spriteSize/2, 2);
-	double newY = pow(spritePos.y - mousePos.y + spriteSize/2, 2);
 
-	return sqrt(newX + newY);
+
+/*-------------------- CLICKING FUNCTIONS --------------------*/
+
+//This functions finds out where on the screen the player clicked
+int DiscoverClickArea(Vector2f tilemapArea, Vector2f selectingTilesArea, Vector2f currentMousePos, Vector2f windowSize)
+{
+	//see if it overlaps with the tilemap
+	//(bound by top left)
+	if (currentMousePos.x > 0 &&
+		currentMousePos.y > 0 &&
+		currentMousePos.x < tilemapArea.x &&
+		currentMousePos.y < tilemapArea.y)
+	{
+		return 1;
+	}
+
+	//if not, see if overlaps with the selecting tiles
+	//(Bound by top right)
+	if (currentMousePos.x < windowSize.x &&
+		currentMousePos.y > 0 &&
+		currentMousePos.x > selectingTilesArea.x &&
+		currentMousePos.y < selectingTilesArea.y)
+	{
+		return 2;
+	}
+
+	return 0;
+	
+}
+
+//this function finds out which tile the player clicked
+void ClickSprite(vector<vector<Sprite>>& sprites, int numSprites, float spriteSize, Vector2f mousePos, Texture& newTexture)
+{
+	Sprite *closestSprite = &sprites[mousePos.x / (spriteSize)][mousePos.y / (spriteSize)];
+	closestSprite->setTexture(newTexture);
+}
+
+int SelectSprite(float spriteSize, Vector2f mousePos)
+{
+	cout << mousePos.y << " / " << spriteSize << " = " << mousePos.y / spriteSize << endl;
+	return mousePos.y / spriteSize;
 }

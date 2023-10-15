@@ -30,14 +30,15 @@ void DrawTiles(vector<Sprite>&, int, RenderWindow&);
 
 /*-------------------- SETTING TEXTURES AND SPRITES FUNCTIONS --------------------*/
 bool SetTextures(vector<Texture>&, int);
-void SetSprites(vector<vector<mySprite>>&, int, int, float, vector<Texture>&);
-void SetSelectableSprites(vector<Sprite>&, int, float, Vector2u, vector<Texture>&);
+void SetSprites(vector<vector<mySprite>>&, int, int, float, vector<Sprite>&);
+void SetSelectableSprites(vector<Sprite>&, Vector2i, float, Vector2u, bool, vector<Texture>&);
 
 /*-------------------- CLICKING FUNCTIONS --------------------*/
-int DiscoverClickArea(Vector2f, Vector2f, Vector2f, Vector2f);
-void ClickSprite(vector<vector<mySprite>>&, int, float, Vector2f, vector<Texture>&, int);
-int SelectSprite(float, Vector2f);
+int DiscoverClickArea(Vector2f, Vector2f, Vector2f, Vector2f, Vector2f);
+bool ClickSprite(bool*, vector<vector<mySprite>>&, int, float, Vector2f, vector<Texture>&, int*);
+int SelectSprite(float, float);
 
-/*-------------------- CLICKING FUNCTIONS --------------------*/
+/*-------------------- SETTINGS FUNCTIONS --------------------*/
+void ClickSettings(int, int*, bool*, vector<vector<mySprite>>&, int, int, vector<Texture>&, int);
 void SaveMap(vector<vector<mySprite>>&, int, int, vector<Texture>&, int);
 bool LoadMap(vector<vector<mySprite>>&, int, int, vector<Texture>&, int);

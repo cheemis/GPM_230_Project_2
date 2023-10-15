@@ -1,18 +1,19 @@
 ﻿  Source.cpp
-E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(19,20): warning C4305: 'initializing': truncation from 'double' to 'float'
-E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(226,46): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(18,20): warning C4305: 'initializing': truncation from 'double' to 'float'
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(236,48): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
           with
           [
               T=float
           ]
-E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(226,73): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(236,75): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
           with
           [
               T=float
           ]
-E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(233,20): warning C4244: 'return': conversion from 'T' to 'int', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(244,20): warning C4244: 'return': conversion from 'T' to 'int', possible loss of data
           with
           [
               T=float
           ]
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(295,25): warning C4018: '<': signed/unsigned mismatch
   Project_2.vcxproj -> E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Debug\Project_2.exe

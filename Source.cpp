@@ -1,6 +1,5 @@
 #include "Header.h"
 
-
 int main()
 {
 	//Rendering variables
@@ -24,18 +23,21 @@ int main()
 	//Texture/sprites variables
 	vector<Texture> textures(numTextures);
 	vector<Sprite> selectableSprites(numTextures);
-	vector<vector<Sprite>> sprites(numCols, vector<Sprite>(numRows));
+	vector<vector<mySprite>> sprites(numCols, vector<mySprite>(numRows));
 	
 
 
 	//Set textures/sprites
-	if(!SetTextures(textures, numTextures)) return 0;
+	if (!SetTextures(textures, numTextures)) return 0;
 	SetSelectableSprites(selectableSprites, numTextures, selectableScale, window.getSize(), textures);
 	SetSprites(sprites, numCols, numRows, scale, textures);
 
 	while (window.isOpen())
 	{
 		bool mousePressed = Mouse::isButtonPressed(Mouse::Left);
+		bool savePressed = Keyboard::isKeyPressed(Keyboard::F);
+		bool loadPressed = Keyboard::isKeyPressed(Keyboard::H);
+
 		Event event;
 
 		while (window.pollEvent(event))
@@ -45,27 +47,36 @@ int main()
 		}
 		window.clear();
 
+		if (savePressed)
+		{
+			SaveMap(sprites, numCols, numRows, textures, numTextures);
+		}
+
+		if (loadPressed)
+		{
+			if (!LoadMap(sprites, numCols, numRows, textures, numTextures))
+			{
+				
+				return 0;
+			}
+			else
+			{
+				cout << "load successful!" << endl;
+			}
+		}
+
 		if (!clicked && mousePressed)
 		{
 			Vector2f tilemapArea = Vector2f(numCols * 64 * scale,numRows * 64 * scale);
-
 			Vector2f selectingTilesArea = Vector2f(window.getSize().x - (64 * selectableScale),numTextures * 64 * selectableScale);
-			
 			Vector2f currentMousePos = Vector2f(Mouse::getPosition(window));
 
 			int clickedArea = DiscoverClickArea(tilemapArea, selectingTilesArea, currentMousePos, Vector2f(window.getSize()));
 
-			/* debugging click locations to terminal
-			cout << "---------------------------" << endl;
-			cout << "tilemapArea: (" << tilemapArea.x << ", " << tilemapArea.y <<")" << endl;
-			cout << "selectingTilesArea: (" << selectingTilesArea.x << ", " << selectingTilesArea.y <<")" << endl;
-			cout << "currentMousePos: (" << currentMousePos.x << ", " << currentMousePos.y <<")" << endl;
-			*/
-
 			switch (clickedArea)
 			{
 			case 1: //Clicked doesnt need to be set, painting
-				ClickSprite(sprites, numCols, 64 * scale ,currentMousePos, textures[currentSpriteIndex]);
+				ClickSprite(sprites, numCols, 64 * scale ,currentMousePos, textures, currentSpriteIndex);
 				cout << "clicked tile map" << endl;
 				break;
 
@@ -80,13 +91,6 @@ int main()
 				clicked = true;
 				//do nothing
 			}
-
-			/*
-			cout << "current mouse position: (" << currentMousePos.x << ", " << currentMousePos.y << ")" << endl;
-
-			ClickSprite(sprites, numCols, currentMousePos, textures, index);
-			index = (index + 1) % 8;
-			*/
 		}
 		else if (clicked && !mousePressed)
 		{
@@ -98,7 +102,7 @@ int main()
 		{
 			for (int j = 0; j < numRows; j++)
 			{
-				window.draw(sprites[i][j]);
+				window.draw(sprites[i][j].sprite);
 				//cout << "drawing " << sprites[i][j].getTexture() << " - (" << sprites[i][j].getPosition().x << ", " << sprites[i][j].getPosition().y << ")" << endl;
 			}
 		}
@@ -135,8 +139,13 @@ bool SetTextures(vector<Texture>& textures, int numTextures)
 	//is there a better way to do this?
 	for (const auto& entry : fs::directory_iterator(path))
 	{
-		//base return case
-		if (i >= numTextures) return false;
+		//base return case - either no files or got all files needed
+		if (i >= numTextures)
+		{
+			if(i > 0) return true;
+			return false;
+		}
+
 
 		//if the image is NOT found in the file system
 		if (!textures[i].loadFromFile(entry.path().string()))
@@ -155,7 +164,7 @@ bool SetTextures(vector<Texture>& textures, int numTextures)
 
 
 //this function sets all the sprites with their textures when the scene starts
-void SetSprites(vector<vector<Sprite>>& sprites, int numCols, int numRows, float scale, vector<Texture>& textures)
+void SetSprites(vector<vector<mySprite>>& sprites, int numCols, int numRows, float scale, vector<Texture>& textures)
 {
 	int count = 0;
 
@@ -163,10 +172,11 @@ void SetSprites(vector<vector<Sprite>>& sprites, int numCols, int numRows, float
 	{
 		for (int j = 0; j < numRows; j++)
 		{
-			sprites[i][j].setTexture(textures[0]);//set everything to dirt
-			sprites[i][j].setScale(scale, scale);
+			sprites[i][j].TextureIndex = 0;
+			sprites[i][j].sprite.setTexture(textures[0]);//set everything to dirt
+			sprites[i][j].sprite.setScale(scale, scale);
 
-			sprites[i][j].setPosition(64 * scale * i, 64 * scale * j);
+			sprites[i][j].sprite.setPosition(64 * scale * i, 64 * scale * j);
 			
 			count++;
 		}
@@ -221,10 +231,11 @@ int DiscoverClickArea(Vector2f tilemapArea, Vector2f selectingTilesArea, Vector2
 }
 
 //this function finds out which tile the player clicked
-void ClickSprite(vector<vector<Sprite>>& sprites, int numSprites, float spriteSize, Vector2f mousePos, Texture& newTexture)
+void ClickSprite(vector<vector<mySprite>>& sprites, int numSprites, float spriteSize, Vector2f mousePos, vector<Texture>& textures, int newTextureIndex)
 {
-	Sprite *closestSprite = &sprites[mousePos.x / (spriteSize)][mousePos.y / (spriteSize)];
-	closestSprite->setTexture(newTexture);
+	mySprite *closestSprite = &sprites[mousePos.x / (spriteSize)][mousePos.y / (spriteSize)];
+	closestSprite->TextureIndex = newTextureIndex;
+	closestSprite->sprite.setTexture(textures[newTextureIndex]);
 }
 
 int SelectSprite(float spriteSize, Vector2f mousePos)
@@ -232,3 +243,72 @@ int SelectSprite(float spriteSize, Vector2f mousePos)
 	cout << mousePos.y << " / " << spriteSize << " = " << mousePos.y / spriteSize << endl;
 	return mousePos.y / spriteSize;
 }
+
+
+
+/*-------------------- SAVING FUNCTIONS --------------------*/
+void SaveMap(vector<vector<mySprite>>& sprites, int numCol, int numRow, vector<Texture>& textures, int numTextures)
+{
+	string saveFileName = "Save.txt";
+	ofstream saveFile(saveFileName, ofstream::out | ofstream::trunc);
+
+	for (int i = 0; i < numCol; i++)
+	{
+		for (int j = 0; j < numCol; j++)
+		{
+			saveFile << sprites[i][j].TextureIndex;
+		}
+		saveFile << endl;
+	}
+	cout << "saved map!" << endl;
+}
+
+bool LoadMap(vector<vector<mySprite>>& sprites, int numCol, int numRow, vector<Texture>& textures, int numTextures)
+{
+	string saveFileName = "Save.txt";
+	string outputString = "";
+	ifstream saveFile(saveFileName);
+
+	//make sure doesnt load out of bounds
+	int col = 0;
+	
+	cout << "loading file!" << endl;
+
+	// Use a while loop together with the getline() function to read the file line by line
+	while (getline(saveFile, outputString))
+	{
+		cout << "output: " << outputString << " : " << outputString.length() << endl;
+
+		//too many columns - bad save file
+		if (col > numCol)
+		{
+			cout << "local col was greater than max columns: " << col << " > " << numCol << endl;
+			return false;
+		}
+		//row size isn't the same - bad save file
+		if (outputString.length() != numRow)
+		{
+			cout << "string lengths werent the same: " << outputString.length() << " != " << numRow << endl;
+			return false;
+		}
+
+		for (int row = 0; row < outputString.length(); row++)
+		{
+			int newRowIndex = (int)(outputString[row] - '0');
+
+			//saved texture out of bounds -- bad save file
+			if (newRowIndex < 0 || newRowIndex > numTextures)
+			{
+				cout << "texture ID was out of range: " << newRowIndex << endl;
+				return false;
+			}
+			sprites[col][row].TextureIndex = newRowIndex;
+			sprites[col][row].sprite.setTexture(textures[newRowIndex]);
+
+		}
+		col++;
+	}
+	saveFile.close();
+	return true;
+}
+

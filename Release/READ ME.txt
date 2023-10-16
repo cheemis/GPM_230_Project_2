@@ -1,0 +1,19 @@
+2D Grid Based Map Editor
+
+By Nicholas Nolasco
+
+Github Link: https://github.com/cheemis/GPM_230_Project_2
+
+Executable name in project folder: Project_2
+
+Hi Proffessor Woytowitz,
+Here is my submission for the 2D Grid Based Map Editor assignment. There are two things I'd like to mention regarding this assignment.
+
+1) In class, we talked about the final grid being less than 64x64, so my grid is 32x32. However, if you read through the code (primarily the top of main() in Source.cpp) you'll see that the tilemap can scale to any dimension.
+
+2) In class, we talked about how the eraser tool doesn't have to create a void tile, and a textured tile can be used as an "erased state" instead. So, for my project, the water tile is an "erased" tile.
+
+If you have any questions, please let me know.
+
+Thank you,
+Nicholas Nolasco

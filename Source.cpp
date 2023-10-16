@@ -3,10 +3,10 @@
 int main()
 {
 	//Rendering variables
-	RenderWindow window(VideoMode(512, 512), "Sprites!");
+	RenderWindow window(VideoMode(512, 512), "Island Adventure!");
 
 	//Texture variables
-	int numTextures = 8;
+	int numTextures = 9;
 	int numSettingsTextures = 6;
 
 	//Sprite variables
@@ -88,22 +88,17 @@ int main()
 				{
 					clicked = ClickSprite(&eyeDropperSelected, brushSize, numCol, numRow, sprites, numCol, 64 * scale, currentMousePos, textures, &currentSpriteIndex);
 				}
-
-				
-				cout << "clicked tile map: " << clicked << endl;
 				break;
 
 			//clicked on selectable sprites
 			case 2://Clicked does need to be set, only select one sprite at a time
 				currentSpriteIndex = SelectSprite(64 * selectableScale, currentMousePos.y) + 1; //plus one because first tile is water
-				cout << "sprite clicked index: " << currentSpriteIndex << endl;
 				clicked = true;
 				break;
 
 			//clicked on settings
 			case 3://Clicked does need to be set, only select one setting at a time
 				//currentSpriteIndex = SelectSprite(64 * selectableScale, currentMousePos.x);
-				cout << "setting clicked index: " << SelectSprite(64 * selectableScale, currentMousePos.x) << endl;
 				ClickSettings(SelectSprite(64 * selectableScale, currentMousePos.x),
 							  &currentSpriteIndex,
 							  &eyeDropperSelected,
@@ -120,7 +115,6 @@ int main()
 				break;
 
 			default://Clicked does need to be set, nothing only needs to happen once
-				cout << "didn't click anything of importance" << endl;
 				clicked = true;
 				//do nothing
 			}
@@ -182,7 +176,6 @@ bool SetTextures(vector<Texture>& textures, int numTextures)
 			return false;
 		}
 
-
 		//if the image is NOT found in the file system
 		if (!textures[i].loadFromFile(entry.path().string()))
 		{
@@ -192,7 +185,6 @@ bool SetTextures(vector<Texture>& textures, int numTextures)
 		textures[i].setSmooth(true);
 		i++;
 	}
-	cout << "all images successfully added!" << endl;
 	return true;
 }
 
@@ -215,7 +207,6 @@ void SetSprites(vector<vector<mySprite>>& sprites, int numCols, int numRows, flo
 			count++;
 		}
 	}
-	cout << count << " sprites set!" << endl;
 }
 
 
@@ -232,7 +223,6 @@ void SetSelectableSprites(vector<Sprite>& sprites, Vector2i SpriteRange, float s
 
 		current++;
 	}
-	cout << current << " sprites set!" << endl;
 }
 
 
@@ -331,7 +321,6 @@ bool ClickSprite(bool* eyeDropperSelected, int brushSize, int numCol, int numRow
 
 int SelectSprite(float spriteSize, float mousePos)
 {
-	//cout << mousePos << " / " << spriteSize << " = " << mousePos / spriteSize << endl;
 	return mousePos / spriteSize;
 }
 
@@ -402,6 +391,7 @@ float myClamp(int brushSize, float scale) //created cause regular clamp wasnt wo
 	case 2:
 		return scale;
 	}
+	return scale;
 }
 
 
@@ -430,14 +420,10 @@ bool LoadMap(vector<vector<mySprite>>& sprites, int numCol, int numRow, vector<T
 
 	//make sure doesnt load out of bounds
 	int col = 0;
-	
-	cout << "loading file!" << endl;
 
 	// Use a while loop together with the getline() function to read the file line by line
 	while (getline(saveFile, outputString))
 	{
-		cout << "output: " << outputString << " : " << outputString.length() << endl;
-
 		//too many columns - bad save file
 		if (col > numCol)
 		{
@@ -468,5 +454,8 @@ bool LoadMap(vector<vector<mySprite>>& sprites, int numCol, int numRow, vector<T
 		col++;
 	}
 	saveFile.close();
+
+	cout << "loaded file!" << endl;
+
 	return true;
 }

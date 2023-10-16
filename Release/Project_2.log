@@ -1,0 +1,24 @@
+﻿  Source.cpp
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(20,23): warning C4305: 'initializing': truncation from 'double' to 'float'
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(45,27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(46,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(278,16): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(279,16): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(324,18): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(362,27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(367,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(378,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(440,25): warning C4018: '<': signed/unsigned mismatch
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 678 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Project_2.vcxproj -> E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Release\Project_2.exe

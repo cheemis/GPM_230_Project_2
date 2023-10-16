@@ -2,20 +2,19 @@
 E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(20,23): warning C4305: 'initializing': truncation from 'double' to 'float'
 E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(45,27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(46,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(288,16): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(278,16): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
           with
           [
               T=float
           ]
-E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(289,16): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(279,16): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
           with
           [
               T=float
           ]
-E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(335,18): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
-E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(373,27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(378,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(389,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(454,25): warning C4018: '<': signed/unsigned mismatch
-E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(405): warning C4715: 'myClamp': not all control paths return a value
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(324,18): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(362,27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(367,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(378,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(440,25): warning C4018: '<': signed/unsigned mismatch
   Project_2.vcxproj -> E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Debug\Project_2.exe

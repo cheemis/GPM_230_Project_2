@@ -28,17 +28,20 @@ struct mySprite
 /*-------------------- MAIN HELPER FUNCTIONS --------------------*/
 void DrawTiles(vector<Sprite>&, int, RenderWindow&);
 
+
 /*-------------------- SETTING TEXTURES AND SPRITES FUNCTIONS --------------------*/
 bool SetTextures(vector<Texture>&, int);
-void SetSprites(vector<vector<mySprite>>&, int, int, float, vector<Sprite>&);
+void SetSprites(vector<vector<mySprite>>&, int, int, float, Texture&);
 void SetSelectableSprites(vector<Sprite>&, Vector2i, float, Vector2u, bool, vector<Texture>&);
 
 /*-------------------- CLICKING FUNCTIONS --------------------*/
 int DiscoverClickArea(Vector2f, Vector2f, Vector2f, Vector2f, Vector2f);
-bool ClickSprite(bool*, vector<vector<mySprite>>&, int, float, Vector2f, vector<Texture>&, int*);
+bool ClickSprite(bool*, int, int, int, vector<vector<mySprite>>&, int, float, Vector2f, vector<Texture>&, int*);
 int SelectSprite(float, float);
 
 /*-------------------- SETTINGS FUNCTIONS --------------------*/
-void ClickSettings(int, int*, bool*, vector<vector<mySprite>>&, int, int, vector<Texture>&, int);
+void ClickSettings(int, int*, bool*, int*, int*, float, vector<vector<mySprite>>&, int, int, vector<Sprite>&, vector<Texture>&, int);
+void SetBrushSize(int*, int, int, vector<Sprite>&);
+float myClamp(int, float);
 void SaveMap(vector<vector<mySprite>>&, int, int, vector<Texture>&, int);
 bool LoadMap(vector<vector<mySprite>>&, int, int, vector<Texture>&, int);

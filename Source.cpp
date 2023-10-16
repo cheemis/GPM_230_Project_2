@@ -7,7 +7,7 @@ int main()
 
 	//Texture variables
 	int numTextures = 8;
-	int numSettingsTextures = 4;
+	int numSettingsTextures = 6;
 
 	//Sprite variables
 	float selectableScale = 1;
@@ -19,8 +19,13 @@ int main()
 	int numRow = 16;
 	float scale = .4225;
 
-	//Clikcing variables
+	//Clicking variables
 	bool clicked = false;
+
+	//painting variables
+	int brushSize = 0;
+	int eraserSize = 0;
+
 
 	//Texture/sprites variables
 	vector<Texture> textures(numTextures + numSettingsTextures + 1 /*1 is for the background*/);
@@ -31,12 +36,18 @@ int main()
 
 	//Set textures/sprites
 	if (!SetTextures(textures, numTextures + numSettingsTextures + 1)) return 0;
-	SetSelectableSprites(selectableSprites, Vector2i(0, numTextures), selectableScale, window.getSize(), true, textures);
+	SetSelectableSprites(selectableSprites, Vector2i(1, numTextures), selectableScale, window.getSize(), true, textures);
 	SetSelectableSprites(settingsSprites, Vector2i(numTextures, numTextures + numSettingsTextures), selectableScale, window.getSize(), false, textures);
-	SetSprites(sprites, numCol, numRow, scale, selectableSprites);
+	SetSprites(sprites, numCol, numRow, scale, textures[0]);
+
+
+	//set brush scales
+	SetBrushSize(&brushSize, selectableScale, settingsSprites.size() - 2, settingsSprites);
+	SetBrushSize(&eraserSize, selectableScale, settingsSprites.size() - 1, settingsSprites);
 
 	//set the background image
 	background.setTexture(textures[textures.size() - 1]);
+
 
 	//main loop
 	while (window.isOpen())
@@ -53,6 +64,7 @@ int main()
 		}
 		window.clear();
 
+
 		//check if clicking somewhere
 		if (!clicked && mousePressed)
 		{
@@ -66,26 +78,42 @@ int main()
 			//determine what area was clicked
 			switch (clickedArea)
 			{
+			//clicked on tilemap
 			case 1: //Clicked doesnt need to be set, painting
-				clicked = ClickSprite(&eyeDropperSelected, sprites, numCol, 64 * scale ,currentMousePos, textures, &currentSpriteIndex);
+				if (currentSpriteIndex == 0) //erasing
+				{
+					clicked = ClickSprite(&eyeDropperSelected, eraserSize, numCol, numRow, sprites, numCol, 64 * scale, currentMousePos, textures, &currentSpriteIndex);
+				}
+				else //drawing
+				{
+					clicked = ClickSprite(&eyeDropperSelected, brushSize, numCol, numRow, sprites, numCol, 64 * scale, currentMousePos, textures, &currentSpriteIndex);
+				}
+
+				
 				cout << "clicked tile map: " << clicked << endl;
 				break;
 
+			//clicked on selectable sprites
 			case 2://Clicked does need to be set, only select one sprite at a time
-				currentSpriteIndex = SelectSprite(64 * selectableScale, currentMousePos.y);
+				currentSpriteIndex = SelectSprite(64 * selectableScale, currentMousePos.y) + 1; //plus one because first tile is water
 				cout << "sprite clicked index: " << currentSpriteIndex << endl;
 				clicked = true;
 				break;
 
+			//clicked on settings
 			case 3://Clicked does need to be set, only select one setting at a time
 				//currentSpriteIndex = SelectSprite(64 * selectableScale, currentMousePos.x);
 				cout << "setting clicked index: " << SelectSprite(64 * selectableScale, currentMousePos.x) << endl;
 				ClickSettings(SelectSprite(64 * selectableScale, currentMousePos.x),
 							  &currentSpriteIndex,
 							  &eyeDropperSelected,
+							  &brushSize,
+							  &eraserSize,
+							  selectableScale,
 							  sprites,
 							  numCol,
 							  numRow,
+							  settingsSprites,
 							  textures,
 							  numTextures);
 				clicked = true;
@@ -125,7 +153,6 @@ int main()
 }
 
 
-
 /*-------------------- MAIN HELPER FUNCTIONS --------------------*/
 
 void DrawTiles(vector<Sprite>& sprites, int numSprites, RenderWindow& window)
@@ -135,7 +162,6 @@ void DrawTiles(vector<Sprite>& sprites, int numSprites, RenderWindow& window)
 		window.draw(sprites[i]);
 	}
 }
-
 
 
 /*-------------------- SETTING TEXTURES AND SPRITES FUNCTIONS --------------------*/
@@ -164,7 +190,6 @@ bool SetTextures(vector<Texture>& textures, int numTextures)
 			return false;
 		}
 		textures[i].setSmooth(true);
-		cout << "adding " << entry.path() << endl;
 		i++;
 	}
 	cout << "all images successfully added!" << endl;
@@ -172,9 +197,8 @@ bool SetTextures(vector<Texture>& textures, int numTextures)
 }
 
 
-
 //this function sets all the sprites with their textures when the scene starts
-void SetSprites(vector<vector<mySprite>>& sprites, int numCols, int numRows, float scale, vector<Sprite>& selectableSprites)
+void SetSprites(vector<vector<mySprite>>& sprites, int numCols, int numRows, float scale, Texture& defaultTexture)
 {
 	int count = 0;
 
@@ -183,7 +207,7 @@ void SetSprites(vector<vector<mySprite>>& sprites, int numCols, int numRows, flo
 		for (int j = 0; j < numRows; j++)
 		{
 			sprites[i][j].TextureIndex = 0;
-			sprites[i][j].sprite.setTexture(*selectableSprites[0].getTexture());//set everything to dirt
+			sprites[i][j].sprite.setTexture(defaultTexture);//set everything to dirt
 			sprites[i][j].sprite.setScale(scale, scale);
 
 			sprites[i][j].sprite.setPosition(64 * scale * i, 64 * scale * j);
@@ -193,6 +217,7 @@ void SetSprites(vector<vector<mySprite>>& sprites, int numCols, int numRows, flo
 	}
 	cout << count << " sprites set!" << endl;
 }
+
 
 void SetSelectableSprites(vector<Sprite>& sprites, Vector2i SpriteRange, float scale, Vector2u screenSize, bool screenLeft, vector<Texture>& textures)
 {
@@ -210,11 +235,11 @@ void SetSelectableSprites(vector<Sprite>& sprites, Vector2i SpriteRange, float s
 	cout << current << " sprites set!" << endl;
 }
 
+
 void SetSettings(vector<Sprite>& settingsSprites, int numSprites, float scale, Vector2u screenSize, vector<Texture>& textures)
 {
 	string path = "Assets/";
 }
-
 
 
 /*-------------------- CLICKING FUNCTIONS --------------------*/
@@ -256,12 +281,13 @@ int DiscoverClickArea(Vector2f tilemapArea, Vector2f selectingTilesArea, Vector2
 	
 }
 
-//this function finds out which tile the player clicked
-bool ClickSprite(bool* eyeDropperSelected, vector<vector<mySprite>>& sprites, int numSprites, float spriteSize, Vector2f mousePos, vector<Texture>& textures, int* newTextureIndex)
-{
-	mySprite* closestSprite = &sprites[mousePos.x / (spriteSize)][mousePos.y / (spriteSize)];
 
-	cout << "eye dropper selected: " << *eyeDropperSelected << endl;
+//this function finds out which tile the player clicked
+bool ClickSprite(bool* eyeDropperSelected, int brushSize, int numCol, int numRow, vector<vector<mySprite>>& sprites, int numSprites, float spriteSize, Vector2f mousePos, vector<Texture>& textures, int* newTextureIndex)
+{
+	int spriteCol = mousePos.x / (spriteSize);
+	int spriteRow = mousePos.y / (spriteSize);
+	mySprite* closestSprite = &sprites[spriteCol][spriteRow];
 
 	//eye dropper tool
 	if (*eyeDropperSelected)
@@ -273,23 +299,56 @@ bool ClickSprite(bool* eyeDropperSelected, vector<vector<mySprite>>& sprites, in
 	//regular drawing
 	else
 	{
-		closestSprite->TextureIndex = *newTextureIndex;
-		closestSprite->sprite.setTexture(textures[*newTextureIndex]);
+		//if theres a brush size
+		if (brushSize)
+		{
+			for (int i = -brushSize; i < brushSize; i++)
+			{
+				int col = clamp(spriteCol + i, 0, numCol - 1);
+
+				for (int j = -brushSize; j < brushSize; j++)
+				{
+					int row = clamp(spriteRow + j, 0, numRow - 1);
+
+					mySprite* currentSprite = &sprites[col][row];
+
+					currentSprite->TextureIndex = *newTextureIndex;
+					currentSprite->sprite.setTexture(textures[*newTextureIndex]);
+				}
+			}
+		}
+		//single sized brush
+		else
+		{
+			closestSprite->TextureIndex = *newTextureIndex;
+			closestSprite->sprite.setTexture(textures[*newTextureIndex]);
+		}
+
 		return false;
 	}
-
-	
 }
+
 
 int SelectSprite(float spriteSize, float mousePos)
 {
-	cout << mousePos << " / " << spriteSize << " = " << mousePos / spriteSize << endl;
+	//cout << mousePos << " / " << spriteSize << " = " << mousePos / spriteSize << endl;
 	return mousePos / spriteSize;
 }
 
 
 /*-------------------- SETTINGS FUNCTIONS --------------------*/
-void ClickSettings(int settingsIndex, int* currentSpriteIndex, bool *eyeDropperSelected, vector<vector<mySprite>>& sprites, int numCol, int numRow, vector<Texture>& textures, int numTextures)
+void ClickSettings(int settingsIndex,
+				   int* currentSpriteIndex,
+				   bool *eyeDropperSelected,
+				   int* brushSize,
+				   int* eraserSize,
+				   float scale,
+				   vector<vector<mySprite>>& sprites,
+				   int numCol,
+				   int numRow,
+				   vector<Sprite>& settingsSprites,
+				   vector<Texture>& textures,
+				   int numTextures)
 {
 	switch (settingsIndex)
 	{
@@ -304,12 +363,44 @@ void ClickSettings(int settingsIndex, int* currentSpriteIndex, bool *eyeDropperS
 	case 2: //load the tilemap
 		LoadMap(sprites, numCol, numRow, textures, numTextures);
 		break;
-	case 3: // use eye dropper tool
+
+	case 3: //use eye dropper tool
 		*eyeDropperSelected = true;
+		break;
+
+	case 4: //change brush size
+		*brushSize = (*brushSize + 1) % 3;
+		SetBrushSize(brushSize, scale, settingsSprites.size() - 2, settingsSprites);
+		break;
+
+	case 5: //change eraser size
+		*eraserSize = (*eraserSize + 1) % 3;
+		SetBrushSize(eraserSize, scale, settingsSprites.size() - 1, settingsSprites);
 		break;
 
 	default: //do nothing
 		break;
+	}
+}
+
+
+void SetBrushSize(int* brushSize, int scale, int brushIndex, vector<Sprite>& settingsSprites)
+{
+	float localScale = myClamp(*brushSize, scale);
+	settingsSprites[brushIndex].setScale(localScale, localScale);
+}
+
+
+float myClamp(int brushSize, float scale) //created cause regular clamp wasnt working
+{
+	switch (brushSize)
+	{
+	case 0:
+		return scale * .5f;
+	case 1:
+		return scale * .75f;
+	case 2:
+		return scale;
 	}
 }
 
@@ -329,6 +420,7 @@ void SaveMap(vector<vector<mySprite>>& sprites, int numCol, int numRow, vector<T
 	}
 	cout << "saved map!" << endl;
 }
+
 
 bool LoadMap(vector<vector<mySprite>>& sprites, int numCol, int numRow, vector<Texture>& textures, int numTextures)
 {
@@ -378,4 +470,3 @@ bool LoadMap(vector<vector<mySprite>>& sprites, int numCol, int numRow, vector<T
 	saveFile.close();
 	return true;
 }
-

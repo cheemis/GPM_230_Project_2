@@ -1,5 +1,5 @@
 ﻿  Source.cpp
-E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(20,21): warning C4305: 'initializing': truncation from 'double' to 'float'
+E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(20,23): warning C4305: 'initializing': truncation from 'double' to 'float'
 E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(45,27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(46,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 E:\Career Work\Education\UCSC\Quarters\First Year\Fall\GPM 230\Project_2\Source.cpp(288,16): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data

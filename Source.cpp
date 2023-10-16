@@ -15,9 +15,9 @@ int main()
 	bool eyeDropperSelected = false;
 
 	//Tilemap variables
-	int numCol = 16;
-	int numRow = 16;
-	float scale = .4225;
+	int numCol = 32;
+	int numRow = 32;
+	float scale = 0.21125;
 
 	//Clicking variables
 	bool clicked = false;
